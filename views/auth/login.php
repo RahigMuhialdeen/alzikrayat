@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Alzikrayat - Photo Sharing Web Application
+ * 
+ * @package   Alzikrayat\Views\Auth
+ * @file      login.php
+ * @category  View / Presentation Layer
+ * @see       \App\Controllers\AuthController::showLogin()
+ * @see       \App\Controllers\AuthController::login()
+ * 
+ * Description:
+ * Renders the user authentication login form interface. Displays the 7-day last login 
+ * context timestamp retrieved from session state or persistent HTTP cookies, and 
+ * provides client-side validation triggers.
+ */
+
 require __DIR__ . '/../layout/header.php';
 ?>
 
@@ -10,6 +26,12 @@ require __DIR__ . '/../layout/header.php';
                 <p class="text-muted mb-4">Login to continue sharing your memories.</p>
 
                 <?php
+                /**
+                 * Last Login Context Logic Block
+                 * 
+                 * Evaluates and renders the timestamp of the previous successful login session.
+                 * Checks flash session array first, then falls back to persistent HTTP cookie storage.
+                 */
                 // Show the previous successful login timestamp once, then clear the session copy.
                 if (!empty($_SESSION['last_login_context'])):
                 ?>
@@ -25,7 +47,10 @@ require __DIR__ . '/../layout/header.php';
                     </div>
                 <?php endif; ?>
 
+                <!-- User Authentication HTML Form Component -->
                 <form method="post" action="<?= url('/login') ?>" class="needs-validation" novalidate>
+
+                    <!-- Email Field -->
                     <div class="mb-3">
                         <label class="form-label" for="email">Email</label>
                         <input
@@ -35,11 +60,11 @@ require __DIR__ . '/../layout/header.php';
                             name="email"
                             maxlength="100"
                             autocomplete="email"
-                            required
-                        >
+                            required>
                         <div class="invalid-feedback">Enter a valid email.</div>
                     </div>
 
+                    <!-- Password Field -->
                     <div class="mb-3">
                         <label class="form-label" for="password">Password</label>
                         <input
@@ -49,11 +74,11 @@ require __DIR__ . '/../layout/header.php';
                             name="password"
                             minlength="8"
                             autocomplete="current-password"
-                            required
-                        >
+                            required>
                         <div class="invalid-feedback">Password is required.</div>
                     </div>
 
+                    <!-- Form Submission Control -->
                     <button class="btn btn-primary w-100" type="submit">Login</button>
                 </form>
 
