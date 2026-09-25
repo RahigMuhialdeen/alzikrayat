@@ -1,7 +1,35 @@
+# =====================================================================
+
+# Alzikrayat - Apache Server Routing & URL Rewriting Rules
+
+# Pattern: Front Controller Pattern Enforcer
+
+# Architecture: Presentation / Server Routing Tier
+
+# =====================================================================
+
+# Enable Apache URL Rewriting Engine
+
 RewriteEngine On
+
+# Define the base URI path for rewrites in the local environment.
+
+# Ensure this matches your subfolder structure inside xampp/htdocs/
+
 RewriteBase /alzikrayat/public/
 
-# Do not rewrite existing files or directories.
+# Condition 1: Exclude physical files (CSS, JS, Uploaded Images) from dynamic routing.
+
 RewriteCond %{REQUEST_FILENAME} !-f
+
+# Condition 2: Exclude physical directories from dynamic routing.
+
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# Core Routing Rule: Pass all incoming requests to the Front Controller (index.php)
+
+# QSA = Query String Append (preserves GET parameters)
+
+# L = Last rule to process
+
 RewriteRule ^ index.php [QSA,L]
