@@ -1,4 +1,23 @@
-<?php require __DIR__ . '/../layout/header.php'; ?>
+<?php
+
+/**
+ * Alzikrayat - Photo Sharing Web Application
+ * 
+ * @package   Alzikrayat\Views\Photos
+ * @file      index.php
+ * @category  View / Presentation Layer
+ * @see       \App\Controllers\PhotoController::index()
+ * 
+ * @var array $photos List of photo records retrieved from database for gallery display.
+ * 
+ * Description:
+ * Renders the main photo gallery interface. Provides dynamic layout view switches 
+ * (3 columns, 4 columns, list view) via client-side JavaScript attributes, loops through 
+ * photo entities, and displays an empty state fallback when no images exist.
+ */
+
+require __DIR__ . '/../layout/header.php'; ?>
+<!-- Gallery Header & Layout Switcher Controls -->
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
         <h1 class="fw-bold mb-1">Gallery</h1>
@@ -10,6 +29,7 @@
         <button class="btn btn-outline-primary" data-layout="list">List</button>
     </div>
 </div>
+<!-- Photo Cards Grid Listing -->
 <div id="gallery" class="row g-4 gallery-grid-3">
     <?php foreach ($photos as $photo): ?>
         <div class="gallery-item col-md-6 col-lg-4">
@@ -23,6 +43,7 @@
         </div>
     <?php endforeach; ?>
 </div>
+<!-- Empty State Component -->
 <?php if (empty($photos)): ?><div class="empty-state text-center py-5">
         <h2>No photos yet</h2>
         <p>Register and upload the first memory.</p><a class="btn btn-primary" href="<?= url('/register') ?>">Get Started</a>

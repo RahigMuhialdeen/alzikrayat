@@ -1,4 +1,26 @@
-<?php require __DIR__ . '/../layout/header.php'; ?>
+<?php
+
+/**
+ * Alzikrayat - Photo Sharing Web Application
+ * 
+ * @package   Alzikrayat\Views\Photos
+ * @file      show.php
+ * @category  View / Presentation Layer
+ * @see       \App\Controllers\PhotoController::show()
+ * @see       \App\Controllers\PhotoController::destroy()
+ * @see       \App\Controllers\PhotoController::addComment()
+ * 
+ * @var array $photo    Photo details array retrieved from database.
+ * @var array $comments List of user comments linked to this photo entity.
+ * 
+ * Description:
+ * Renders the photo details page. Displays high-resolution image preview with metadata, 
+ * renders conditional ownership-protected delete form for logged-in owners, lists user comments, 
+ * and provides comment submission form with client-side validation.
+ */
+
+require __DIR__ . '/../layout/header.php';
+?>
 
 <div class="mb-4">
     <h1 class="fw-bold mb-1">Photo Details</h1>
@@ -11,8 +33,7 @@
             <img
                 class="detail-image"
                 src="<?= url('/images/uploads/' . rawurlencode($photo['file_name'])) ?>"
-                alt="<?= e($photo['title']) ?>"
-            >
+                alt="<?= e($photo['title']) ?>">
 
             <div class="p-4">
                 <h2 class="fw-bold"><?= e($photo['title']) ?></h2>
@@ -30,8 +51,7 @@
                         method="post"
                         action="<?= url('/photo/' . $photo['id'] . '/delete') ?>"
                         class="mt-3"
-                        onsubmit="return confirm('Delete this photo permanently?');"
-                    >
+                        onsubmit="return confirm('Delete this photo permanently?');">
                         <button class="btn btn-outline-danger" type="submit">Delete My Photo</button>
                     </form>
                 <?php endif; ?>
@@ -66,8 +86,7 @@
                         name="comment"
                         maxlength="1000"
                         rows="4"
-                        required
-                    ></textarea>
+                        required></textarea>
                     <div class="invalid-feedback mb-2">Comment is required and must be at most 1000 characters.</div>
                     <button class="btn btn-primary w-100" type="submit">Post Comment</button>
                 </form>
