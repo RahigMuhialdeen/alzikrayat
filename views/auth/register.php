@@ -18,7 +18,7 @@
  * @package Alzikrayat\Views\Auth
  * @file register.php
  * @category View / Presentation Layer
- * @see \AuthController::showRegister()
+ * @see \AuthController::registerForm()
  * @see \AuthController::register()
  */
 

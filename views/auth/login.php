@@ -14,7 +14,7 @@
  * @package Alzikrayat\Views\Auth
  * @file login.php
  * @category View / Presentation Layer
- * @see \AuthController::showLogin()
+ * @see \AuthController::loginForm() 
  * @see \AuthController::login()
  */
 
