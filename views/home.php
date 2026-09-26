@@ -1,107 +1,217 @@
 <?php
 
 /**
- * Alzikrayat - Photo Sharing Web Application
- * 
- * @package   Alzikrayat\Views
- * @file      home.php
- * @category  View / Presentation Layer
- * @see       \App\Controllers\HomeController::index()
- * 
- * @var array $photos       List of latest photo records fetched from database.
- * @var int   $userCount    Total number of registered active users.
- * @var int   $photoCount   Total count of uploaded photos across gallery.
- * @var int   $commentCount Total count of comments posted.
- * 
- * Description:
- * Renders the primary landing page interface. Displays the hero section with dynamic image collage, 
- * renders system-wide analytics counter statistics (Users, Photos, Comments), presents the latest 
- * uploaded media cards grid, and provides architectural project overview details.
+ * Main landing page view for the Alzikrayat photo-sharing application.
+ *
+ * Renders the primary application landing page, including the hero
+ * presentation area, recent-photo collage, application statistics,
+ * latest community photos, navigation calls to action, and a brief
+ * overview of the application's MVC architecture.
+ *
+ * The view receives photo records and aggregate application statistics
+ * from the application layer and presents them through responsive
+ * Bootstrap-based layout components.
+ *
+ * @package Alzikrayat\Views
+ * @file home.php
+ * @category View / Presentation Layer
+ *
+ * @see \PhotoController::home()
+ *
+ * @var array $photos       List of latest photo records retrieved for display.
+ * @var int   $userCount    Total number of registered users.
+ * @var int   $photoCount   Total number of uploaded photos.
+ * @var int   $commentCount Total number of posted comments.
  */
 
 require __DIR__ . '/layout/header.php';
 ?>
 
-<!-- Hero Section with Dynamic Collage & Primary CTAs -->
+<!--
+    Hero Section.
+    Provides the primary landing-page introduction, recent-photo
+    collage, and context-aware calls to action for visitors and
+    authenticated users.
+-->
 <section class="hero-section rounded-4 p-4 p-md-5 mb-5">
     <div class="row align-items-center g-4">
+
         <div class="col-lg-7">
-            <span class="badge bg-light text-dark mb-3">Photo Sharing Application</span>
-            <h1 class="display-4 fw-bold">Preserve moments. Share memories.</h1>
-            <p class="lead">Alzikrayat is a welcoming photo-sharing space where users can upload, explore, and comment on meaningful images.</p>
+            <span class="badge bg-light text-dark mb-3">
+                Photo Sharing Application
+            </span>
+
+            <h1 class="display-4 fw-bold">
+                Preserve moments. Share memories.
+            </h1>
+
+            <p class="lead">
+                Alzikrayat is a welcoming photo-sharing space where users
+                can upload, explore, and comment on meaningful images.
+            </p>
+
+            <!--
+                Primary navigation actions.
+                Authenticated users receive an Upload action, while
+                unauthenticated visitors receive a registration action.
+            -->
             <div class="d-flex gap-2 flex-wrap">
-                <a class="btn btn-light btn-lg" href="<?= url('/gallery') ?>">Explore Gallery</a>
+                <a class="btn btn-light btn-lg" href="<?= url('/gallery') ?>">
+                    Explore Gallery
+                </a>
+
                 <?php if (empty($_SESSION['user_id'])): ?>
-                    <a class="btn btn-outline-light btn-lg" href="<?= url('/register') ?>">Join Alzikrayat</a>
+
+                    <a
+                        class="btn btn-outline-light btn-lg"
+                        href="<?= url('/register') ?>">
+                        Join Alzikrayat
+                    </a>
+
                 <?php else: ?>
-                    <a class="btn btn-outline-light btn-lg" href="<?= url('/upload') ?>">Upload Photo</a>
+
+                    <a
+                        class="btn btn-outline-light btn-lg"
+                        href="<?= url('/upload') ?>">
+                        Upload Photo
+                    </a>
+
                 <?php endif; ?>
             </div>
         </div>
+
         <div class="col-lg-5">
-            <!-- Hero Collage Previewing Up To 3 Recent Photos -->
+
+            <!--
+                Recent Photo Hero Collage.
+                Displays up to three of the latest available photos.
+                An empty-state message is displayed when no photos exist.
+            -->
             <div class="hero-collage">
+
                 <?php foreach (array_slice($photos, 0, 3) as $photo): ?>
-                    <img src="<?= url('/images/uploads/' . rawurlencode($photo['file_name'])) ?>" alt="<?= e($photo['title']) ?>">
+
+                    <img
+                        src="<?= url('/images/uploads/' . rawurlencode($photo['file_name'])) ?>"
+                        alt="<?= e($photo['title']) ?>">
+
                 <?php endforeach; ?>
+
                 <?php if (empty($photos)): ?>
-                    <div class="empty-hero">Your gallery starts here.</div>
+
+                    <div class="empty-hero">
+                        Your gallery starts here.
+                    </div>
+
                 <?php endif; ?>
+
             </div>
         </div>
+
     </div>
 </section>
 
-<!-- System Statistics Counter Metrics Grid -->
+<!--
+    Application Statistics Section.
+    Presents aggregate counts supplied by the application layer
+    for users, uploaded photos, and comments.
+-->
 <section class="row g-3 mb-5">
+
     <div class="col-md-4">
         <div class="stat-card">
             <div class="stat-number"><?= $userCount ?></div>
             <div>Registered Users</div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="stat-card">
             <div class="stat-number"><?= $photoCount ?></div>
             <div>Shared Photos</div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="stat-card">
             <div class="stat-number"><?= $commentCount ?></div>
             <div>Comments</div>
         </div>
     </div>
+
 </section>
 
-<!-- Latest Community Photos Grid Section -->
+<!--
+    Latest Community Photos Section.
+    Iterates through the supplied photo records and presents the
+    latest uploaded photos as responsive gallery cards.
+-->
 <section class="mb-5">
+
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div>
             <h2 class="fw-bold">Latest Memories</h2>
-            <p class="text-muted mb-0">Recently shared photos from the community.</p>
+            <p class="text-muted mb-0">
+                Recently shared photos from the community.
+            </p>
         </div>
-        <a href="<?= url('/gallery') ?>">View all</a>
+
+        <a href="<?= url('/gallery') ?>">
+            View all
+        </a>
     </div>
+
     <div class="row g-4">
+
         <?php foreach ($photos as $photo): ?>
+
             <div class="col-md-6 col-lg-4">
-                <a class="photo-card" href="<?= url('/photo/' . $photo['id']) ?>">
-                    <img src="<?= url('/images/uploads/' . rawurlencode($photo['file_name'])) ?>" alt="<?= e($photo['title']) ?>">
+                <a
+                    class="photo-card"
+                    href="<?= url('/photo/' . $photo['id']) ?>">
+
+                    <img
+                        src="<?= url('/images/uploads/' . rawurlencode($photo['file_name'])) ?>"
+                        alt="<?= e($photo['title']) ?>">
+
                     <div class="p-3">
-                        <h3 class="h5 mb-1"><?= e($photo['title']) ?></h3>
-                        <small class="text-muted">By <?= e($photo['first_name'] . ' ' . $photo['last_name']) ?></small>
+
+                        <h3 class="h5 mb-1">
+                            <?= e($photo['title']) ?>
+                        </h3>
+
+                        <small class="text-muted">
+                            By
+                            <?= e($photo['first_name'] . ' ' . $photo['last_name']) ?>
+                        </small>
+
                     </div>
                 </a>
             </div>
+
         <?php endforeach; ?>
+
     </div>
 </section>
 
-<!-- Application Brief Architecture Overview Panel -->
+<!--
+    Application Architecture Overview.
+    Provides a concise description of the MVC structure and the
+    manually implemented application components used by the project.
+-->
 <section class="about-panel rounded-4 p-4 p-md-5">
-    <h2 class="fw-bold">About Alzikrayat</h2>
-    <p class="mb-0">Alzikrayat is designed as an MVC-based photo-sharing web application. The project separates presentation, application/business logic, and persistent data while keeping routing, SQL, validation, authentication, uploads, and comments understandable and handwritten.</p>
+
+    <h2 class="fw-bold">
+        About Alzikrayat
+    </h2>
+
+    <p class="mb-0">
+        Alzikrayat is designed as an MVC-based photo-sharing web application.
+        The project separates presentation, application/business logic, and
+        persistent data while keeping routing, SQL, validation, authentication,
+        uploads, and comments understandable and handwritten.
+    </p>
+
 </section>
 
 <?php require __DIR__ . '/layout/footer.php'; ?>

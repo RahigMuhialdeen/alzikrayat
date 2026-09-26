@@ -2,34 +2,64 @@
 
 # Alzikrayat - Apache Server Routing & URL Rewriting Rules
 
+#
+
 # Pattern: Front Controller Pattern Enforcer
 
 # Architecture: Presentation / Server Routing Tier
 
+#
+
+# This file configures Apache URL rewriting for the public application
+
+# directory. Requests that do not correspond to an existing file or
+
+# directory are forwarded to public/index.php so the application's
+
+# manual PHP Router can determine the appropriate controller action.
+
 # =====================================================================
 
-# Enable Apache URL Rewriting Engine
+# Enable Apache's URL rewriting engine.
 
 RewriteEngine On
 
-# Define the base URI path for rewrites in the local environment.
+# Define the application's base URI for the local XAMPP environment.
 
-# Ensure this matches your subfolder structure inside xampp/htdocs/
+# This must match the public directory path under xampp/htdocs/.
 
 RewriteBase /alzikrayat/public/
 
-# Condition 1: Exclude physical files (CSS, JS, Uploaded Images) from dynamic routing.
+# Do not rewrite requests that already point to an existing physical file.
+
+# This allows assets such as CSS, JavaScript, and image files to be served
+
+# directly by Apache without passing through the PHP Front Controller.
 
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# Condition 2: Exclude physical directories from dynamic routing.
+# Do not rewrite requests that already point to an existing physical directory.
+
+# This prevents Apache from routing real directories through index.php.
 
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Core Routing Rule: Pass all incoming requests to the Front Controller (index.php)
+# Front Controller Routing Rule:
 
-# QSA = Query String Append (preserves GET parameters)
+# Forward every remaining request to public/index.php.
 
-# L = Last rule to process
+#
+
+# QSA (Query String Append):
+
+# Preserves existing GET query-string parameters when Apache rewrites
+
+# the request to index.php.
+
+#
+
+# L (Last):
+
+# Stops further rewrite-rule processing after this rule is applied.
 
 RewriteRule ^ index.php [QSA,L]

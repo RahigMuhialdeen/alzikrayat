@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Handles creation of comments on photo detail pages.
+ * Handles creation and validation of comments submitted for photo detail pages.
+ *
+ * Verifies that the user is authenticated, validates the target photo and
+ * comment content, persists the comment through the Comment model, and
+ * redirects the user with an appropriate success or error message.
  */
 class CommentController extends Controller
 {
@@ -24,6 +28,11 @@ class CommentController extends Controller
 
     /**
      * Validates and stores a comment for an existing photo.
+     *
+     * Verifies that the user is authenticated, the target photo exists, and
+     * the submitted comment is not empty and does not exceed 1000 characters.
+     * Invalid input or a missing photo is stored in the session as an error
+     * before redirecting the user.
      *
      * @param array<string, mixed> $params Route parameters containing the photo ID.
      * @return void

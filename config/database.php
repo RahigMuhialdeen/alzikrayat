@@ -1,23 +1,43 @@
 <?php
 
 /**
- * Singleton database connection for the Data Tier.
+ * Singleton database connection manager for the Data Tier.
  *
- * Keeps one configured PDO connection available to all model classes.
+ * Provides a single configured PDO connection that can be shared by
+ * the application's model classes. The Singleton pattern prevents
+ * unnecessary creation of multiple database connection objects during
+ * the same request lifecycle.
+ *
+ * The PDO connection is configured to:
+ * - Throw PDOException instances when database operations fail.
+ * - Return query results as associative arrays by default.
+ * - Disable emulated prepared statements so that PDO uses native
+ *   prepared statements where supported by the database driver.
+ *
+ * @package Alzikrayat\Core
+ * @category Data Access / Database Infrastructure
  */
 class Database
 {
-    /** @var Database|null Shared singleton instance. */
+    /** @var Database|null Shared Singleton database manager instance. */
     private static ?Database $instance = null;
 
-    /** @var PDO Active PDO connection. */
+    /** @var PDO Active configured PDO database connection. */
     private PDO $connection;
 
     /**
-     * Creates the PDO connection with secure error and prepared-statement settings.
+     * Creates and configures the application's PDO database connection.
+     *
+     * The constructor is private because Database instances must be
+     * obtained through getInstance(). It configures the MySQL connection
+     * using the application's database name, credentials, character set,
+     * PDO error mode, default fetch mode, and prepared-statement settings.
      *
      * @return void
-     * @throws PDOException When MySQL cannot be reached or the database is unavailable.
+     *
+     * @throws PDOException
+     * Thrown when PDO cannot establish a connection to the configured
+     * MySQL database or when the PDO connection initialization fails.
      */
     private function __construct()
     {
@@ -27,24 +47,35 @@ class Database
         $pass = '';
         $charset = 'utf8mb4';
 
+        // Build the MySQL DSN using the configured host, database, and character set.
         $dsn = "mysql:host={$host};dbname={$db};charset={$charset}";
+
+        /*
+         * Configure PDO for exception-based error handling, associative
+         * array result sets, and native prepared statements.
+         */
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
+        // Establish the configured database connection.
         $this->connection = new PDO($dsn, $user, $pass, $options);
     }
 
     /**
-     * Returns the single Database instance, creating it on first use.
+     * Returns the shared Singleton Database instance.
      *
-     * @return Database Shared database wrapper instance.
+     * Creates the Database object on the first call and returns the
+     * already-created instance on subsequent calls during the request.
+     *
+     * @return Database The shared Database manager instance.
      */
     public static function getInstance(): Database
     {
         if (self::$instance === null) {
+            // Lazily create the single Database instance when first requested.
             self::$instance = new Database();
         }
 
@@ -52,9 +83,13 @@ class Database
     }
 
     /**
-     * Returns the configured PDO connection used by the models.
+     * Returns the active PDO connection used by the application's models.
      *
-     * @return PDO Active PDO connection.
+     * Provides model classes with access to the centrally configured
+     * PDO connection without exposing the connection initialization
+     * process itself.
+     *
+     * @return PDO The active configured PDO database connection.
      */
     public function getConnection(): PDO
     {

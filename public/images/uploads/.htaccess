@@ -1,8 +1,43 @@
-# Security: Disable PHP execution inside the uploads directory
+# =====================================================================
+
+# Alzikrayat - Upload Directory Security Rules
+
+#
+
+# Security Purpose:
+
+# Prevent uploaded PHP and PHP-like files from being executed or
+
+# served as executable scripts inside the uploads directory.
+
+#
+
+# Uploaded files are intended to be treated as data/resources only,
+
+# not as executable server-side application code.
+
+# =====================================================================
+
+# Disable CGI execution for this directory.
 
 Options -ExecCGI
+
+# Remove PHP-related handlers so matching files are not associated
+
+# with executable PHP handlers by Apache.
+
 RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8
+
+# Remove PHP-related content types from the listed file extensions.
+
 RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8
+
+# Deny HTTP access to PHP and PHP-like files matching these extensions.
+
+# This provides an additional protection layer if a malicious executable
+
+# file is uploaded into the uploads directory.
+
 <FilesMatch "\.(php|phtml|php[0-9]\*)$">
 Require all denied
 </FilesMatch>

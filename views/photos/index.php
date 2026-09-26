@@ -29,7 +29,7 @@ require __DIR__ . '/../layout/header.php'; ?>
         <button class="btn btn-outline-primary" data-layout="list">List</button>
     </div>
 </div>
-<!-- Photo Cards Grid Listing -->
+<!-- Dynamic Photo Gallery Listing -->
 <div id="gallery" class="row g-4 gallery-grid-3">
     <?php foreach ($photos as $photo): ?>
         <div class="gallery-item col-md-6 col-lg-4">

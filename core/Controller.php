@@ -11,6 +11,10 @@ abstract class Controller
     /**
      * Loads a view file and exposes the supplied data as local variables.
      *
+     * The method resolves the requested view path, verifies that the file
+     * exists, extracts the supplied data for use by the view, and includes
+     * the view file. A RuntimeException is thrown when the view cannot be found.
+     *
      * @param string $view Relative view name without the .php extension.
      * @param array<string, mixed> $data Data passed from the controller to the view.
      * @return void
@@ -19,6 +23,7 @@ abstract class Controller
     protected function view(string $view, array $data = []): void
     {
         $viewPath = __DIR__ . '/../views/' . $view . '.php';
+
         if (!is_file($viewPath)) {
             throw new RuntimeException('View not found: ' . $view);
         }
@@ -30,8 +35,11 @@ abstract class Controller
     /**
      * Redirects the browser to an application-relative path and stops execution.
      *
+     * Converts the supplied application path into a complete URL, sends an
+     * HTTP Location header, and terminates the current request immediately.
+     *
      * @param string $path Application route beginning with /.
-     * @return never This method terminates execution after sending the header.
+     * @return never This method always terminates execution after sending the redirect header.
      */
     protected function redirect(string $path): never
     {
@@ -42,13 +50,21 @@ abstract class Controller
     /**
      * Requires an authenticated session before allowing a protected action.
      *
-     * @return void
-     * @throws Never This method redirects unauthenticated users and therefore does not return in that case.
+     * If no authenticated user ID exists in the session, an appropriate
+     * warning message is stored in the session and the user is redirected
+     * to the login page. Authenticated requests continue normally.
+     *
+     * @return void Returns normally for authenticated users; otherwise execution
+     *              is terminated by redirecting to the login page.
      */
     protected function requireLogin(): void
     {
         if (empty($_SESSION['user_id'])) {
-            $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Please login to continue.'];
+            $_SESSION['flash'] = [
+                'type' => 'warning',
+                'message' => 'Please login to continue.'
+            ];
+
             $this->redirect('/login');
         }
     }

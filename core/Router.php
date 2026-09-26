@@ -3,8 +3,10 @@
 /**
  * Hand-written regular-expression router used instead of a backend framework.
  *
- * Route placeholders such as {id} are converted into regular-expression groups,
- * then matched against the current request path before the controller action is called.
+ * Registers application routes, converts dynamic placeholders such as {id}
+ * into regular-expression capture groups, matches incoming requests against
+ * those routes, extracts route parameters, and dispatches the request to the
+ * appropriate controller action.
  */
 class Router
 {
@@ -13,6 +15,9 @@ class Router
 
     /**
      * Registers an HTTP route and its controller handler.
+     *
+     * The HTTP method is normalized to uppercase and the route definition
+     * is stored for matching during request dispatch.
      *
      * @param string $method HTTP method such as GET or POST.
      * @param string $path Route path, optionally containing placeholders such as {id}.
@@ -25,7 +30,13 @@ class Router
     }
 
     /**
-     * Matches a request against the registered routes and dispatches its controller action.
+     * Matches a request against registered routes and dispatches its controller action.
+     *
+     * The request URI is normalized to remove the application's physical base
+     * path, then each matching HTTP method is tested using a regular expression.
+     * Dynamic route placeholders are converted into capture groups so their
+     * values can be passed to the controller action as named parameters.
+     * If no registered route matches the request, a custom HTTP 404 page is shown.
      *
      * @param string $method Current HTTP request method.
      * @param string $uri Current request URI, including any query string.
@@ -38,9 +49,15 @@ class Router
 
         // Remove the physical application base path so routes remain portable within XAMPP.
         $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
-        if ($basePath !== '' && $basePath !== '/' && str_starts_with($path, $basePath)) {
+
+        if (
+            $basePath !== ''
+            && $basePath !== '/'
+            && str_starts_with($path, $basePath)
+        ) {
             $path = substr($path, strlen($basePath)) ?: '/';
         }
+
         $path = '/' . ltrim($path, '/');
 
         foreach ($this->routes as [$routeMethod, $routePath, $handler]) {
@@ -49,6 +66,11 @@ class Router
             }
 
             $paramNames = [];
+
+            /*
+             * Convert dynamic placeholders such as {id} into regular-expression
+             * capture groups while recording their names for later parameter mapping.
+             */
             $pattern = preg_replace_callback(
                 '/\{([a-zA-Z][a-zA-Z0-9_]*)\}/',
                 function (array $match) use (&$paramNames): string {
@@ -59,17 +81,21 @@ class Router
             );
 
             $pattern = '#^' . $pattern . '$#';
+
             if (preg_match($pattern, $path, $matches)) {
                 array_shift($matches);
                 $params = [];
 
+                // Map each captured URL value back to its original placeholder name.
                 foreach ($paramNames as $index => $name) {
                     $params[$name] = $matches[$index] ?? null;
                 }
 
                 [$controllerClass, $action] = $handler;
+
                 $controller = new $controllerClass();
                 $controller->$action($params);
+
                 return;
             }
         }

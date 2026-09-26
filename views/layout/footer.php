@@ -1,17 +1,23 @@
 <?php
 
 /**
- * Alzikrayat - Photo Sharing Web Application
- * 
- * @package   Alzikrayat\Views\Layout
- * @file      footer.php
- * @category  View / Presentation Layer
- * @see       \App\Controllers\HomeController
- * 
- * Description:
- * Renders the global layout footer for the application. Closes the primary semantic 
- * HTML container element, presents copyright information, and loads required client-side 
- * JavaScript assets including Bootstrap 5 framework bundles and custom app interactions.
+ * Global footer layout view for the Alzikrayat photo-sharing application.
+ *
+ * Renders the common footer shared by the application's presentation
+ * pages. The footer closes the main semantic content container, displays
+ * the application's copyright information, and loads the client-side
+ * JavaScript resources required by the application.
+ *
+ * The Bootstrap JavaScript bundle is loaded from the configured CDN
+ * and the application's custom JavaScript file is loaded from the
+ * public assets directory using the application's URL helper.
+ *
+ * This view is included by individual presentation pages after their
+ * page-specific content has been rendered.
+ *
+ * @package Alzikrayat\Views\Layout
+ * @file footer.php
+ * @category View / Presentation Layer
  */
 ?>
 </main>
@@ -26,10 +32,18 @@
     </div>
 </footer>
 
-<!-- External Bootstrap 5 JavaScript Bundle (Includes Popper for Dropdowns and Modals) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!--
+    Local Bootstrap 5 JavaScript bundle.
+    Includes Popper and allows Bootstrap interactive
+    components to work without requiring an internet connection.
+-->
+<script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
 
-<!-- Application Custom Client-Side Script Asset -->
+<!--
+    Application-specific client-side JavaScript.
+    This file contains the custom validation and interaction logic
+    used by the application's presentation layer.
+-->
 <script src="<?= url('/assets/js/app.js') ?>"></script>
 
 </body>
