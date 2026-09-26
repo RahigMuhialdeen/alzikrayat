@@ -33,7 +33,7 @@ class PhotoController extends Controller
      */
     public function home(): void
     {
-        $this->view('photos/home', [
+        $this->view('home', [
             'title' => 'Alzikrayat | Photo Sharing',
             'photos' => $this->photos->latest(6),
             'userCount' => $this->users->count(),
@@ -221,7 +221,7 @@ class PhotoController extends Controller
      */
     public function about(): void
     {
-        $this->view('photos/about', ['title' => 'About Us']);
+        $this->view('about', ['title' => 'About Us']);
     }
 
     /**

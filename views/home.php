@@ -19,7 +19,7 @@
  * uploaded media cards grid, and provides architectural project overview details.
  */
 
-require __DIR__ . '/../layout/header.php';
+require __DIR__ . '/layout/header.php';
 ?>
 
 <!-- Hero Section with Dynamic Collage & Primary CTAs -->
@@ -104,4 +104,4 @@ require __DIR__ . '/../layout/header.php';
     <p class="mb-0">Alzikrayat is designed as an MVC-based photo-sharing web application. The project separates presentation, application/business logic, and persistent data while keeping routing, SQL, validation, authentication, uploads, and comments understandable and handwritten.</p>
 </section>
 
-<?php require __DIR__ . '/../layout/footer.php'; ?>
+<?php require __DIR__ . '/layout/footer.php'; ?>

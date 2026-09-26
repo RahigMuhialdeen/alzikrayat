@@ -13,7 +13,7 @@
  * system architecture, technical stack, and core application features for academic demonstration.
  */
 
-require __DIR__ . '/../layout/header.php';
+require __DIR__ . '/layout/header.php';
 ?>
 
 <!-- Project Overview & Architecture Presentation Section -->
@@ -34,4 +34,4 @@ require __DIR__ . '/../layout/header.php';
     <p class="mb-0">Registration, secure login sessions, seven-day last-login cookie, responsive home page, multiple gallery layouts, physical image uploads, ownership-protected deletion, photo details and comments.</p>
 </section>
 
-<?php require __DIR__ . '/../layout/footer.php'; ?>
+<?php require __DIR__ . '/layout/footer.php'; ?>
